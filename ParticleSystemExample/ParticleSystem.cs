@@ -10,7 +10,7 @@ namespace ParticleSystemExample
     /// <summary>
     /// A class representing a generic particle system
     /// </summary>
-    public class ParticleSystem : DrawableGameComponent
+    public abstract class ParticleSystem : DrawableGameComponent
     {
         #region Constants
 
@@ -122,7 +122,7 @@ namespace ParticleSystemExample
         /// protected constants `textureFilename`, `minNumParticles`, and `maxNumParticles`
         /// should be set in the override.
         /// </summary>
-        protected virtual void InitializeConstants() { }
+        protected abstract void InitializeConstants();
 
         /// <summary>
         /// InitializeParticle randomizes some properties for a particle, then

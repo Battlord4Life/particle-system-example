@@ -7,10 +7,17 @@ namespace ParticleSystemExample
     /// <summary>
     /// An example game demonstrating the use of particle systems
     /// </summary>
-    public class ParticleSystemExampleGame : Game
+    public class ParticleSystemExampleGame : Game, IParticleEmitter
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private ExplosionParticleSystem _explode;
+        private FireworkParticleSystem _firework;
+        private MouseState _priorMS;
+
+        public Vector2 Position { get; set; }
+
+        public Vector2 Veclocity { get; set; }
 
         /// <summary>
         /// Constructs an instance of the game
@@ -28,6 +35,16 @@ namespace ParticleSystemExample
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
+            RainParticleSystem rain = new(this, new(100, -20, 500, 10));
+            Components.Add(rain);
+            _explode = new(this, 20);
+            Components.Add(_explode);
+            _firework = new(this, 20);
+            Components.Add(_firework);
+
+            PixieParticleSystem pixie = new(this, this);
+            Components.Add(pixie);
 
             base.Initialize();
         }
@@ -51,8 +68,27 @@ namespace ParticleSystemExample
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            MouseState currentMS = Mouse.GetState();
             
+            Vector2 MousePS = new(currentMS.X, currentMS.Y);
+
+            if(currentMS.LeftButton == ButtonState.Pressed && _priorMS.LeftButton != ButtonState.Pressed)
+            {
+                _explode.PlaceExplosions(MousePS);
+            }
+
+            if (currentMS.RightButton == ButtonState.Pressed && _priorMS.RightButton != ButtonState.Pressed)
+            {
+                _firework.PlaceFirework(MousePS);
+            }
+
+            Veclocity = MousePS - Position;
+            Position = MousePS;
+
+
+            _priorMS = currentMS;
+            // TODO: Add your update logic here
+
             base.Update(gameTime);
         }
 
